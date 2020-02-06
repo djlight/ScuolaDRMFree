@@ -4,7 +4,8 @@
     "copyright": "Copyright © 2020, Ernesto Castellotti",
     "license": "AGPL v3.0",
 	"authors": [
-		"Ernesto Castellotti"
+		"Ernesto Castellotti",
+		"Davide Repetto"
 	],
 	"dependencies": {
 		"semver": "~>0.3.2"
