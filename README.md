@@ -34,3 +34,20 @@ So if for example the id of the book to be downloaded is "hellobook_45334" and i
 In a few seconds the software will generate all the keys necessary to decipher the book and will ask you to confirm to continue (just press any key), then the removal of the DRM will begin.
 
 It takes a couple of seconds to generate a clean DRM PDF!
+
+## Copyright info
+    Copyright (C) 2020 Ernesto Castellotti <mail@ernestocastellotti.it>
+    Copyright (C) 2020 Davide Repetto
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, contact the owner of copyrights
