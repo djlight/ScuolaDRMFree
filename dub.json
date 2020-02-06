@@ -1,0 +1,13 @@
+{
+    "name": "scuoladrmfree",
+    "description": "A tool for remove DRM from ScuolaBook PDF",
+    "copyright": "Copyright © 2020, Ernesto Castellotti",
+    "license": "AGPL v3.0",
+	"authors": [
+		"Ernesto Castellotti"
+	],
+	"dependencies": {
+		"semver": "~>0.3.2"
+	},
+	"dflags-ldc": ["-static", "-O3"]
+}
