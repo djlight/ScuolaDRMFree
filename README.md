@@ -1,6 +1,6 @@
 ## ScuolaDRMFree
 ScuolaDRMFree was created because I believe in free study, I am opposed to limiting the tools available to users to study.
-This software allows you to remove DRM from the school ebooks provided by scuolabook.it, so you canb use the ebooks as you wish.
+This software allows you to remove DRM from the school ebooks provided by scuolabook.it, so you can use the ebooks as you wish.
 
 Be careful though, using this software it may be possible to do many negative things such as violating copyright, these practices are absolutely not approved by me, I believe that violating copyright is a bad thing and you should not use my software as an helper to do it.
 
