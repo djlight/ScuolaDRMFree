@@ -53,8 +53,9 @@ void fixXrefTable(uint magic, char[] table, ubyte[] pdf) {
 
         table.formattedRead!"%u %u"(start, len);
         table.findSkip("\x0D\x0A");
+        auto end = start + len;
 
-        for (int i = start; i < start + len; i++) {
+        foreach (i; start..end) {
             uint offset;
             uint gen;
 
