@@ -21,7 +21,7 @@ void main(string[] args) {
 	import std.stdio : writeln, readln;
 	import std.path : absolutePath, dirName;
 	import std.file : write, exists, isDir;
-	import drm : computePdfMagic, removeDrm;
+	import drm : computePdfMagics, removeDrm;
 	import util : parseScuolaDb, readPdf, printPdfList;
 
 	writeln();
@@ -43,7 +43,7 @@ void main(string[] args) {
 	auto outputPath = args[2].absolutePath;
 	assert(outputPath.dirName.exists && outputPath.dirName.isDir, "The output path directory does not exist");
 	auto pdf = readPdf(bookName, scuoladb);
-	auto magic = computePdfMagic(bookName, pdf, scuoladb);
+	auto magics = computePdfMagics(bookName, pdf, scuoladb);
 	writeln("Output path: ", outputPath);
 	writeln();
 	writeln("--------");
@@ -53,7 +53,7 @@ void main(string[] args) {
 	writeln();
 	writeln("Press any key to confirm the removal of the DRM");
 	readln();
-	removeDrm(magic, pdf);
+	removeDrm(magics, pdf);
 	write(outputPath, pdf);
 	writeln();
 	writeln("DRMs have been successfully removed!");

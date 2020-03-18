@@ -22,7 +22,7 @@ module drm;
 
 import util : ScuolaDB;
 
-void removeDrm(uint magic, ubyte[] pdf) {
+void removeDrm(uint[] magics, ubyte[] pdf) {
     import std.stdio : writeln;
     import std.algorithm.searching : findSkip, countUntil;
     
@@ -34,14 +34,16 @@ void removeDrm(uint magic, ubyte[] pdf) {
 
         auto endXref = pdfNew.countUntil("\x0D\x0Atrailer\x0D\x0A");
         auto table = pdfNew[0..endXref];
-        fixXrefTable(magic, cast(char[]) table, pdf);
+        fixXrefTable(magics, cast(char[]) table, pdf);
     }
 }
 
-void fixXrefTable(uint magic, char[] table, ubyte[] pdf) {
+void fixXrefTable(uint[] magics, char[] table, ubyte[] pdf) {
     import std.stdio : writeln;
     import std.format :  formattedRead, formattedWrite;
     import std.algorithm.searching : findSkip, countUntil;
+    
+    uint magic;
 
     while (true) {
         uint start;
@@ -65,8 +67,12 @@ void fixXrefTable(uint magic, char[] table, ubyte[] pdf) {
 
             if (offset != 0) {
                 writeln("Obfuscated offset: ", offset);
+                
+                if (magic == 0) {
+                  magic = findMagicKey(magics, offset, pdf.length);
+                }
+                
                 offset ^= magic;
-                assert(offset <= pdf.length, "The computed magic number is wrong, probably this tool is no longer compatible");
                 tableWriter.formattedWrite!"%010u"(offset);
                 table[10] = ' ';
                 auto object = pdf[offset..$];
@@ -94,25 +100,31 @@ void fixObjectNumber(uint number, ubyte[] object) {
     assert(oldObjectNumberLength == object.countUntil("\x20"), "There is no more space in the PDF file, currently this tool cannot remove the DRM from this file");
 }
 
-uint computePdfMagic(string book, ubyte[] pdf, ScuolaDB scuoladb) {
+uint[] computePdfMagics(string book, ubyte[] pdf, ScuolaDB scuoladb) {
     import key : computePdfKey;
     import std.digest : toHexString;
     import std.stdio : writeln;
-
-	auto pdfKey = computePdfKey(book, scuoladb);
+    
+    uint[] magics;
+	auto pdfKeys = computePdfKey(book, scuoladb);
 	auto bookKey = decodeBookKey(pdf);
-    auto magic = cast(uint) (pdfKey % bookKey);
-
-    writeln("PDF computed key: ", pdfKey);
-    writeln("PDF decoded key: ", bookKey);
-    writeln("PDF magic key: ", magic);
-    return magic;
+	
+	foreach (i, pdfKey; pdfKeys) {
+      auto magic = cast(uint) (pdfKey % bookKey);
+      
+      writeln("[", i, "] PDF computed key: ", pdfKey);
+      writeln("[", i, "] PDF decoded key: ", bookKey);
+      writeln("[", i, "] PDF magic key: ", magic);
+      magics ~= magic; 
+    }
+    
+    return magics;
 }
 
 private ulong decodeBookKey(ubyte[] pdf) {
     import std.conv : to;
 
-    ubyte[] header = pdf[11 .. 11 + 42];
+    ubyte[] header = pdf[11 .. 11 + 42].dup;
     int x = pdf.length & 0x7F;
 
     foreach(ref ubyte headerElem; header) {
@@ -124,4 +136,23 @@ private ulong decodeBookKey(ubyte[] pdf) {
     auto bookKey = to!ulong(bookKeyStr, 16);
     header[0..$] = 0;
     return bookKey;
+}
+
+private uint findMagicKey(uint[] magics, uint offset, ulong length) {
+    import std.stdio : writeln, readln;
+    
+    foreach (i, magic; magics) {
+        auto fixedOffset = offset ^ magic;
+        
+        if (fixedOffset <= length) {
+            writeln("The magic key n°", i, " works!");
+            writeln("Press any key to confirm the removal of the DRM");
+            readln();
+            return magic;
+        } else {
+            writeln("The magic key n°", i, " doesn't work! Trying another key...");
+        }
+    }
+    
+    assert(0, "The computed magic numbers is wrong, probably this tool is no longer compatible");
 }

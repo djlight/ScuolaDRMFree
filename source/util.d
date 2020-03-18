@@ -113,8 +113,9 @@ ScuolaDB parseScuolaDb() {
     return scuolaDb;
 }
 
-string getMacAddress() {
+string[] getMacAddress() {
     version(linux) {
+        import std.array : empty;
         import std.file : readText, exists, isDir, dirEntries, SpanMode;
         import std.path : buildPath;
         import std.algorithm.searching : canFind;
@@ -124,6 +125,8 @@ string getMacAddress() {
         
         assert(LINUX_NET.exists, "Directory " ~ LINUX_NET ~ "does not exist");
         assert(LINUX_NET.isDir, LINUX_NET ~ " is not a directory");
+        
+        string[] macs;
 
         foreach (string netInterface; dirEntries(LINUX_NET, SpanMode.shallow)) {
             if (netInterface.canFind("eth") || netInterface.canFind("en")) {
@@ -131,12 +134,13 @@ string getMacAddress() {
                 auto address = addressFile.readText;
 
                 if (address != MAC_NULL) {
-                    return strip(address).toUpper;
+                    macs ~= strip(address).toUpper;
                 } 
             }
         }
 
-        assert(0, "The machine's mac address was not found");
+        assert(!macs.empty, "The machine's mac address was not found");
+        return macs;
     } else {
         static assert(0, "This operating system is not supported");
     }
