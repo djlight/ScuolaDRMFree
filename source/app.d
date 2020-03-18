@@ -19,7 +19,7 @@ Copyright (C) 2020 Ernesto Castellotti <mail@ernestocastellotti.it>
 
 void main(string[] args) {
 	import std.stdio : writeln, readln;
-	import std.path : absolutePath;
+	import std.path : absolutePath, dirName;
 	import std.file : write, exists, isDir;
 	import drm : computePdfMagic, removeDrm;
 	import util : parseScuolaDb, readPdf, printPdfList;
@@ -41,7 +41,7 @@ void main(string[] args) {
 
 	auto bookName = args[1];
 	auto outputPath = args[2].absolutePath;
-	assert(outputPath.exists && outputPath.isDir, "The output path is not a directory or does not exist");
+	assert(outputPath.dirName.exists && outputPath.dirName.isDir, "The output path directory does not exist");
 	auto pdf = readPdf(bookName, scuoladb);
 	auto magic = computePdfMagic(bookName, pdf, scuoladb);
 	writeln("Output path: ", outputPath);
